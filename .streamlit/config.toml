@@ -1,0 +1,12 @@
+# StreetSignal theme: civic green on a warm neutral surface.
+[theme]
+base = "light"
+primaryColor = "#008300"
+backgroundColor = "#f9f9f7"
+secondaryBackgroundColor = "#fcfcfb"
+textColor = "#1f2a24"
+font = "sans-serif"
+
+# The app's whole premise is local-only — keep Streamlit telemetry off too.
+[browser]
+gatherUsageStats = false

@@ -7,7 +7,8 @@ submitted anywhere without your review and consent.
 
 ## Features
 
-- 📸 Upload (or capture) a photo of a civic issue
+- 📸 Upload a photo of a civic issue
+- 🎨 Polished three-step UI (capture → review → export) with an accessible civic-green theme
 - 🤖 Image analysis through a **local Ollama** vision model (`qwen2.5vl:3b`) — no paid AI APIs
 - 📝 Editable report: issue category, visible observations, suggested severity, uncertainty
 - ⚠️ Every report is clearly labeled as AI-assisted and not submitted to any authority
