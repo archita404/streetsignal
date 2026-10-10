@@ -1,10 +1,33 @@
 import json
+import os
 
 import ollama
 import streamlit as st
 
 MODEL_NAME = "qwen2.5vl:3b"
 VALID_SEVERITIES = ["Low", "Medium", "High"]
+
+# Where analysis runs: on the user's machine ("local") or inside this app's
+# own Docker container when deployed, e.g. to a Hugging Face Space ("space").
+HOST_MODE = os.environ.get("STREET_SIGNAL_HOST_MODE", "local")
+if HOST_MODE == "space":
+    LOCAL_BADGE = "No third-party AI APIs"
+    LOCAL_NOTE = (
+        "Photos are analyzed by a locally-run Ollama model inside this app's "
+        "own container — never sent to any third-party AI API."
+    )
+elif HOST_MODE == "cloud":
+    LOCAL_BADGE = "No third-party AI APIs"
+    LOCAL_NOTE = (
+        "Photos are analyzed by a locally-run Ollama model inside this "
+        "demo session's own server — never sent to any third-party AI API."
+    )
+else:
+    LOCAL_BADGE = "Runs 100% on your machine"
+    LOCAL_NOTE = (
+        "Photos are analyzed on this machine only, by your local Ollama "
+        "model — never uploaded anywhere."
+    )
 
 # Status colors from a validated accessible palette. A color never carries
 # meaning alone: each is paired with a dot and a text label.
@@ -60,13 +83,13 @@ st.caption("Local AI for community issue reporting")
 
 badge_col_1, badge_col_2 = st.columns(2, gap="small")
 with badge_col_1:
-    st.badge("Runs 100% on your machine", icon=":material/shield:", color="green")
+    st.badge(LOCAL_BADGE, icon=":material/shield:", color="green")
 with badge_col_2:
     st.badge("Human review required", icon=":material/visibility:", color="blue")
 
 st.write(
     "Upload a photo of a civic issue — a pothole, garbage, a broken streetlight, "
-    "waterlogging — and your local AI drafts an editable report. Nothing is "
+    "waterlogging — and a locally-run AI drafts an editable report. Nothing is "
     "submitted anywhere without your review."
 )
 
@@ -76,7 +99,7 @@ with st.container(border=True):
     uploaded_file = st.file_uploader(
         "Photo of the civic issue",
         type=["jpg", "jpeg", "png"],
-        help="JPG or PNG. Your photo is analyzed on this machine only.",
+        help=LOCAL_NOTE + " JPG or PNG.",
     )
 
     preview_col, controls_col = st.columns([1.1, 1], vertical_alignment="top")
@@ -104,6 +127,11 @@ with st.container(border=True):
             placeholder="e.g. Near the local bus stop",
             help="A landmark in words is enough — no exact coordinates needed.",
         )
+        if HOST_MODE in ("space", "cloud"):
+            st.caption(
+                "Running on this demo's own CPU — analysis can take a "
+                "minute or two."
+            )
         analyze_clicked = st.button(
             "Analyze photo",
             type="primary",
@@ -112,7 +140,7 @@ with st.container(border=True):
             help=(
                 "Upload a photo to enable analysis"
                 if uploaded_file is None
-                else "Ask your local AI model for a draft report"
+                else "Ask the locally-run AI model for a draft report"
             ),
         )
 
@@ -280,6 +308,5 @@ else:
 
 st.divider()
 st.caption(
-    "StreetSignal · Everything runs on your machine. Reports leave this app "
-    "only when you download them."
+    "StreetSignal · Reports leave this app only when you download them."
 )
